@@ -10,7 +10,7 @@ $primary: #151515;
 *:after {
   box-sizing: border-box;
   margin: 0;
-  padding: 0l;
+  padding: 0;
 }
 
 html {
@@ -24,8 +24,10 @@ body {
   font-family: 'Inter', sans-serif;
   padding: 2em;
   max-width: $max-width;
+  
 }
 
 
 
-// Im Build rawg.io clone, with Angular, Tailwind and with Nx Workspace generate a Github Readme file with Project/* You can add global styles to this file, and also import other style files */
+
+
