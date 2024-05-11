@@ -1,13 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { JsonPipe } from '@angular/common';
 import { GameSearchService } from 'src/core/services/common/game-search.service';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
-import { takeUntil } from 'rxjs';
+import { 
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
+import { GameListComponent } from 'src/shared/game-list/game-list.component';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [JsonPipe],
+  imports: [GameListComponent],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-page.component.html',
@@ -22,15 +27,18 @@ export class GamePageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchGames();
-  }
-
-  searchGames() {
-    this.gameSearchService
-      .searchGames()
-      .pipe(takeUntil(this.detsroy$))
+    //this.searchGames();
+    this.gameSearchService.queryString$
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((title: string) => {
+          return this.gameSearchService.searchGames(title);
+        }),
+        takeUntil(this.detsroy$)
+      )
       .subscribe((data) => {
         this.gameSearchService.setGames(data.results);
       });
   }
-}
+} 

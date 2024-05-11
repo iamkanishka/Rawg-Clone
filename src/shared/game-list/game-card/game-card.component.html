@@ -1,1 +1,29 @@
-<p>game-card works!</p>
+<div class="flex flex-col group gap-5 h-full rounded-md hover:scale-110 transition-transform bg-[#202020] text-white">
+  <img
+    class="w-full h-auto"
+    [src]="game.background_image"
+    alt="{{ game.name }}"
+  />
+  <div class="p-3 group-hover: flex flex-col gap-3">
+    <span class="text-2xl text-semibold text-balance">{{ game.name }}</span>
+    <div class="flex-col gap-5 hidden group-hover:flex">
+    <div class="flex justify-between">
+      <span class="text-sm text-slate-300">Generes</span>
+      <div class="flex gap-2">
+        @for(genre of game.genres; track genre.id){
+        <span class="text-sm text-white">{{ genre.name }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="text-sm text-slate-300">Release Date</span>
+      <span class="text-sm text-white">{{ game.released | date }}</span>
+    
+    </div>
+
+  </div>
+ 
+
+  </div>
+</div>
