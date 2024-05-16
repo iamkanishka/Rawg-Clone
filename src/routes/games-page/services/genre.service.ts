@@ -5,20 +5,20 @@ import { Genre } from 'src/core/models/Game';
 import { GenresResult } from 'src/core/models/genres';
 import { environment } from 'src/environments/environment.development';
 
-Injectable({ providedIn: 'root' });
+@Injectable({ providedIn: 'root' })
 export class GenreService {
-  $genres: WritableSignal<Genre[]> = signal([]);
-  $loading: WritableSignal<boolean> = signal(false);
-  constructor(private httpClient: HttpClient) {}
+  public $loading: WritableSignal<boolean> = signal(false);
+  public $genres: WritableSignal<Genre[]> = signal([]);
+
+  constructor(private httpClinet: HttpClient) {}
 
   getGenres(): Observable<Genre[]> {
     this.$loading.set(true);
-    if (this.$genres().length != 0) {
+    if (this.$genres().length > 0) {
       this.$loading.set(false);
       return of(this.$genres());
     }
-
-    return this.httpClient
+    return this.httpClinet
       .get<GenresResult>(`${environment.BASE_API_URL}genres`)
       .pipe(
         tap((result) => this.$genres.set(result.results)),
