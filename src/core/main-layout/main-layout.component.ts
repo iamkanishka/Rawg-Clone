@@ -2,14 +2,16 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AutoDestroyService } from '../services/Utils/auto-destroy.service';
 import { GameSearchService } from '../services/common/game-search.service';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { AsideBarComponent } from './components/aside-bar/aside-bar.component';
+import { GenreService } from 'src/routes/games-page/services/genre.service';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
   providers: [AutoDestroyService],
-  imports: [RouterOutlet, FormsModule],
+  imports: [RouterOutlet, FormsModule, AsideBarComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,12 +22,23 @@ export class MainLayoutComponent implements OnInit {
 
   constructor(
     private destroy$: AutoDestroyService,
-    private gameSearchService: GameSearchService
-  ) {}
+    private gameSearchService: GameSearchService,
+    private genreService: GenreService
+  ) {
+    this.getGenres();
+  }
 
   ngOnInit(): void {
     this.subscribetoInputChanges()
   }
+
+
+ 
+  getGenres(): void {
+    this.genreService.getGenres().pipe(take(1)).subscribe();
+  }
+
+
 
   subscribetoInputChanges() {
     this.queryChange$
