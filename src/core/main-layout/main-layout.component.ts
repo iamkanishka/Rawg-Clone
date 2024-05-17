@@ -6,12 +6,13 @@ import { Subject, debounceTime, distinctUntilChanged, take, takeUntil } from 'rx
 import { FormsModule } from '@angular/forms';
 import { AsideBarComponent } from './components/aside-bar/aside-bar.component';
 import { GenreService } from 'src/routes/games-page/services/genre.service';
+import { TopBarComponent } from './components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
   providers: [AutoDestroyService],
-  imports: [RouterOutlet, FormsModule, AsideBarComponent],
+  imports: [RouterOutlet, FormsModule, AsideBarComponent, TopBarComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
