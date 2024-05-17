@@ -1,12 +1,13 @@
 import { WritableSignal, signal } from '@angular/core';
 import { USER_STORAGE_KEY } from '../constants/user-storage-key';
 import { StorageService } from '../services/common/storage.service';
-import { GameDetails } from './game-details';
+import { Game } from './Game';
+
 
 export class User {
   email: string;
   name: string;
-  $favouriteGames: WritableSignal<Map<number, GameDetails>> = signal(new Map());
+  $favouriteGames: WritableSignal<Map<number, Game >> = signal(new Map());
   storageService: StorageService;
 
   constructor({
@@ -18,7 +19,7 @@ export class User {
     email: string;
     name: string;
     storageService: StorageService;
-    favouriteGames?: Map<number, GameDetails>;
+    favouriteGames?: Map<number, Game>;
   }) {
     this.email = email;
     this.name = name;
@@ -26,7 +27,7 @@ export class User {
     this.storageService = storageService;
   }
 
-  addGame(game: GameDetails) {
+  addGame(game: Game) {
     if (this.$favouriteGames().has(game.id)) {
       this.$favouriteGames().delete(game.id);
       this.$favouriteGames.set(new Map(this.$favouriteGames()));
