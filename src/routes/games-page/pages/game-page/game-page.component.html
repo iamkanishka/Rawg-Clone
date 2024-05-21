@@ -1,3 +1,18 @@
-<h1 class="text-3xl text-white">
-   <app-game-list [games]="$games()"></app-game-list>
-</h1>
+<div class="flex flex-col gap-10">
+  <div class="flex flex-col gap-3">
+    <h1 class="text-7xl text-white font-bold">New and Trending</h1>
+    <span class="text-md text-white"
+      >Based on Player counts and relaease Dates</span
+    >
+  </div>
+
+
+@if(!$loading()){
+<app-game-list [games]="$games()"></app-game-list>
+} @else{
+<div class="flex items-center justify-center">
+  <app-spinner></app-spinner>
+</div>
+}
+
+</div>
