@@ -1,0 +1,16 @@
+<div class="flex flex-col gap-10">
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-3">
+      <h1 class="text-5xl md:text-7xl text-white font-bold">{{ componentParams.title }}</h1>
+      <span class="text-md text-white">{{ componentParams.subtitle }}</span>
+    </div>
+  </div>
+
+  @if(!$loading()){
+  <app-game-list [games]="$games()"></app-game-list>
+  } @else{
+  <div class="flex items-center justify-center">
+    <app-spinner></app-spinner>
+  </div>
+  }
+</div>

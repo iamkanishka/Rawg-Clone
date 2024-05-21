@@ -1,44 +1,37 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { GameSearchService } from 'src/core/services/common/game-search.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+} from '@angular/core';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
-import { 
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+ 
 import { GameListComponent } from 'src/shared/game-list/game-list.component';
+import { SpinnerComponent } from 'src/shared/spinner/spinner.component';
+import { AbstractGamesPageComponent } from 'src/shared/abstract-games-page/abstract-games-page.component';
+import { SearchFilters } from 'src/core/models/search-filters';
+import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [GameListComponent],
+  imports: [GameListComponent, SpinnerComponent],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './game-page.component.html',
-  styleUrl: './game-page.component.css',
+  templateUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.html',
+  styleUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.css',
 })
-export class GamePageComponent implements OnInit {
-  $games = this.gameSearchService.$games;
+export class GamePageComponent extends  AbstractGamesPageComponent {
+ 
+  override defaultSearchFilters: SearchFilters = {
+    ...this.defaultSearchFilters,
+  };
 
-  constructor(
-    private gameSearchService: GameSearchService,
-    private detsroy$: AutoDestroyService
-  ) {}
+  override componentParams: AbstractGamesPageParams = {
+    ...this.componentParams,
+    title: 'All Games',
+  };
 
-  ngOnInit(): void {
-    //this.searchGames();
-    this.gameSearchService.queryString$
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        switchMap((title: string) => {
-          return this.gameSearchService.searchGames(title);
-        }),
-        takeUntil(this.detsroy$)
-      )
-      .subscribe((data) => {
-        this.gameSearchService.setGames(data.results);
-      });
+
+  constructor(){
+    super()
   }
-} 
+}
