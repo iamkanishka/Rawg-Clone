@@ -13,13 +13,12 @@ import { GameSearchService } from 'src/core/services/common/game-search.service'
 import { GameListComponent } from '../game-list/game-list.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { SearchFilters } from 'src/core/models/search-filters';
-import { NgTemplateOutlet } from '@angular/common';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 
 @Component({
   selector: 'app-abstract-games-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, NgTemplateOutlet],
+  imports: [GameListComponent, SpinnerComponent],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './abstract-games-page.component.html',
@@ -29,12 +28,8 @@ export abstract class AbstractGamesPageComponent implements OnInit {
   private readonly gameSearchService: GameSearchService =
     inject(GameSearchService);
   private readonly detsroy$: AutoDestroyService = inject(AutoDestroyService);
-  
-  headerTemplate: TemplateRef<unknown> |  null = null;
 
-
-  
-
+  headerTemplate: TemplateRef<unknown> | null = null;
 
   $games: Signal<Game[]> = this.gameSearchService.$games;
   $loading: Signal<boolean> = this.gameSearchService.$loading;
@@ -49,7 +44,6 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     title: 'Please provide a title',
     showFilters: true,
   };
-
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}

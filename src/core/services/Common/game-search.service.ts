@@ -21,7 +21,7 @@ export class GameSearchService {
   searchGames(filters: SearchFilters): Observable<SearchResult> {
     this.$loading.set(true);
     const params = new HttpParams({
-      fromObject: {...filters },
+      fromObject: { ...filters },
     });
     return this.httpClient
       .get<SearchResult>(`${environment.BASE_API_URL}games`, { params })
