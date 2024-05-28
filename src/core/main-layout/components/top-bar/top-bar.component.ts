@@ -21,7 +21,6 @@ import { AuthService } from '../../../services/common/auth.service';
 import { GameSearchService } from '../../../services/common/game-search.service';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
 
-
 @Component({
   selector: 'app-top-bar',
   standalone: true,

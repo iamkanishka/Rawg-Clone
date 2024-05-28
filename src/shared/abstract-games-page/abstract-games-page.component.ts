@@ -3,41 +3,54 @@ import {
   Component,
   OnInit,
   Signal,
-  TemplateRef,
+  WritableSignal,
   inject,
 } from '@angular/core';
-import { switchMap, takeUntil, tap } from 'rxjs';
-import { Game } from 'src/core/models/Game';
+import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
+import { Game, Genre, SearchResult } from 'src/core/models/Game';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
 import { GameSearchService } from 'src/core/services/common/game-search.service';
 import { GameListComponent } from '../game-list/game-list.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { SearchFilters } from 'src/core/models/search-filters';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
+import { GenreService } from 'src/routes/games-page/services/genre.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-abstract-games-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './abstract-games-page.component.html',
   styleUrl: './abstract-games-page.component.css',
 })
 export abstract class AbstractGamesPageComponent implements OnInit {
-  private readonly gameSearchService: GameSearchService =
+  private readonly gamesSearchService: GameSearchService =
     inject(GameSearchService);
-  private readonly detsroy$: AutoDestroyService = inject(AutoDestroyService);
+  private readonly destroy$: AutoDestroyService = inject(AutoDestroyService);
+  private readonly genreService: GenreService = inject(GenreService);
+  
 
-  headerTemplate: TemplateRef<unknown> | null = null;
+  private readonly fb: FormBuilder = inject(FormBuilder);
 
-  $games: Signal<Game[]> = this.gameSearchService.$games;
-  $loading: Signal<boolean> = this.gameSearchService.$loading;
+  $games: WritableSignal<Game[]> = this.gamesSearchService.$games;
+  $genres: Signal<Genre[]> = this.genreService.$genres;
+
+  $loading: Signal<boolean> = this.gamesSearchService.$loading;
+
+  filters$: BehaviorSubject<SearchFilters>;
+
+
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  orderPreference: string = 'Relevance';
 
   defaultSearchFilters: SearchFilters = {
     search: '',
     page_size: 25,
     ordering: '-relevance',
+    genres: '',
   };
 
   componentParams: AbstractGamesPageParams = {
@@ -45,21 +58,69 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     showFilters: true,
   };
 
+  form: FormGroup;
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
 
   ngOnInit(): void {
-    //this.searchGames();
-    this.gameSearchService.queryString$
+    this.filters$ = new BehaviorSubject<SearchFilters>({
+      ...this.defaultSearchFilters,
+    });
+    if (this.componentParams.showFilters) {
+      this.initForm();
+    }
+    this.subscribeToFiltersChange();
+    this.subscribeToQueryChanges();
+
+    this.initForm();
+  }
+
+  initForm(): void {
+    this.form = this.fb.group({
+      order: [this.defaultSearchFilters.ordering],
+      genres: [this.defaultSearchFilters.genres],
+    });
+
+    this.subscribeToFormChanges();
+  }
+
+
+  subscribeToFormChanges(): void {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const ordering = this.form.controls['order'].value;
+      const genres = this.form.controls['genres'].value;
+      this.filters$.next({
+        ...this.filters$.getValue(),
+        ordering,
+        genres,
+      });
+    });
+  }
+
+  subscribeToFiltersChange(): void {
+    this.filters$
       .pipe(
-        tap((query: string) => (this.defaultSearchFilters.search = query)),
-        switchMap(() => {
-          return this.gameSearchService.searchGames(this.defaultSearchFilters);
-        }),
-        takeUntil(this.detsroy$)
+        tap(() => this.$games.set([])),
+        switchMap((filters: SearchFilters) =>
+          this.gamesSearchService.searchGames(filters)
+        ),
+        takeUntil(this.destroy$)
       )
-      .subscribe((data) => {
-        this.gameSearchService.setGames(data.results);
+      .subscribe((data: SearchResult) => {
+        this.$games.set(data.results)
       });
   }
+
+  subscribeToQueryChanges(): void {
+    this.gamesSearchService.queryString$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((query: string) => {
+        this.filters$.next({
+          ...this.filters$.getValue(),
+          search: query,
+        });
+      });
+  }
+
 }

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 import { SearchFilters } from 'src/core/models/search-filters';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
@@ -9,7 +10,7 @@ import { SpinnerComponent } from 'src/shared/spinner/spinner.component';
 @Component({
   selector: 'app-new-games',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl:
