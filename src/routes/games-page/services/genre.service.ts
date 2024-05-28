@@ -10,12 +10,7 @@ export class GenreService {
   public $loading: WritableSignal<boolean> = signal(false);
   public $genres: WritableSignal<Genre[]> = signal([]);
 
-  constructor(private httpClinet: HttpClient) {
-    this.performAsyncTask((err:string, err3:string, err4:string, err5:string)=>{
-      console.log(err,err3, err4, err5);
-      
-    })
-  }
+  constructor(private httpClinet: HttpClient) {}
 
   getGenres(): Observable<Genre[]> {
     this.$loading.set(true);
@@ -31,19 +26,4 @@ export class GenreService {
         finalize(() => this.$loading.set(false))
       );
   }
-
-
-   performAsyncTask(callback: CallableFunction) :CallableFunction{
-     const  err =  'somthing went wromg' 
-     const  err3 =  'somthing went wromg3' 
-     const  err4 =  'somthing went wromg4' 
-     const  err5 =  'somthing went wromg5' 
-
-  
-    return callback(err,err3, err4, err5)
-}
-
-
-
-
 }

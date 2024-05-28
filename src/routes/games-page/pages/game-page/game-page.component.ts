@@ -9,11 +9,12 @@ import { SpinnerComponent } from 'src/shared/spinner/spinner.component';
 import { AbstractGamesPageComponent } from 'src/shared/abstract-games-page/abstract-games-page.component';
 import { SearchFilters } from 'src/core/models/search-filters';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.html',

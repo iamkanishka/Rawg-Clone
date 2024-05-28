@@ -6,6 +6,8 @@ import { Subject } from 'rxjs';
 })
 export class AutoDestroyService extends Subject<boolean> implements OnDestroy {
   public ngOnDestroy(): void {
+    console.log(this);
+    
     this.next(true);
     this.complete();
   }

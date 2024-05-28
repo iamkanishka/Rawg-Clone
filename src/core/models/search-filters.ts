@@ -3,4 +3,6 @@ export interface SearchFilters{
     page_size?: number,
     ordering?: string,
     metacritic?: string,
+    genres?:string
+    platforms?:string
 }
