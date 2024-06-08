@@ -10,11 +10,12 @@ import { AbstractGamesPageComponent } from 'src/shared/abstract-games-page/abstr
 import { SearchFilters } from 'src/core/models/search-filters';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 import { ReactiveFormsModule } from '@angular/forms';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule, InfiniteScrollModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.html',

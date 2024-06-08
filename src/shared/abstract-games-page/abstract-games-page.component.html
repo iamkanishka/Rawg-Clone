@@ -1,4 +1,10 @@
-<div class="flex flex-col gap-10">
+<div
+  class="flex flex-col gap-10"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="50"
+  (scrolled)="scrolled$.next()"
+>
   <div class="flex flex-col gap-3">
     <h1 class="text-5xl md:text-7xl text-white font-bold">
       {{ componentParams.title }}
@@ -41,11 +47,12 @@
     </div>
   </form>
 
-  @if(!$loading()){
+
   <app-game-list [games]="$games()"></app-game-list>
-  } @else{
-  <div class="flex items-center justify-center">
-    <app-spinner></app-spinner>
-  </div>
-  }
+
+  @if($loading()){
+    <div class="flex items-center justify-center">
+      <app-spinner></app-spinner>
+    </div>
+  } 
 </div>

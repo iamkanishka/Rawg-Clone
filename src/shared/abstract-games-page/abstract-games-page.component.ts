@@ -6,7 +6,14 @@ import {
   WritableSignal,
   inject,
 } from '@angular/core';
-import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  exhaustMap,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Game, Genre, SearchResult } from 'src/core/models/Game';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
 import { GameSearchService } from 'src/core/services/common/game-search.service';
@@ -16,11 +23,12 @@ import { SearchFilters } from 'src/core/models/search-filters';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 import { GenreService } from 'src/routes/games-page/services/genre.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-abstract-games-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule, InfiniteScrollModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './abstract-games-page.component.html',
@@ -31,7 +39,6 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     inject(GameSearchService);
   private readonly destroy$: AutoDestroyService = inject(AutoDestroyService);
   private readonly genreService: GenreService = inject(GenreService);
-  
 
   private readonly fb: FormBuilder = inject(FormBuilder);
 
@@ -42,6 +49,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
 
   filters$: BehaviorSubject<SearchFilters>;
 
+  scrolled$: Subject<void> = new Subject();
 
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   orderPreference: string = 'Relevance';
@@ -72,6 +80,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     }
     this.subscribeToFiltersChange();
     this.subscribeToQueryChanges();
+    this.subscribetoInfiniteScroll()
 
     this.initForm();
   }
@@ -85,7 +94,6 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     this.subscribeToFormChanges();
   }
 
-
   subscribeToFormChanges(): void {
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const ordering = this.form.controls['order'].value;
@@ -98,6 +106,19 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     });
   }
 
+  subscribetoInfiniteScroll() {
+    this.scrolled$
+      .pipe(
+        exhaustMap(() => this.gamesSearchService.nextPage()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((data: SearchResult) => {
+        this.$games.update((values: Game[]) => {
+          return [ ...values, ...data.results ];
+        });
+      });
+  }
+
   subscribeToFiltersChange(): void {
     this.filters$
       .pipe(
@@ -108,7 +129,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe((data: SearchResult) => {
-        this.$games.set(data.results)
+        this.$games.set(data.results);
       });
   }
 
@@ -122,5 +143,4 @@ export abstract class AbstractGamesPageComponent implements OnInit {
         });
       });
   }
-
 }
