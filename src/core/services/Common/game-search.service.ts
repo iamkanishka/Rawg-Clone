@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, WritableSignal, signal } from '@angular/core';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, tap } from 'rxjs';
 import { Game, SearchResult } from 'src/core/models/Game';
 import { SearchFilters } from 'src/core/models/search-filters';
 import { environment } from 'src/environments/environment';
@@ -16,6 +16,9 @@ export class GameSearchService {
   public queryString$: Observable<string> = this.queryString.asObservable();
   public $loading: WritableSignal<boolean> = signal(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  private nextUrl: string = '';
+
   constructor(private httpClient: HttpClient) {}
 
   searchGames(filters: SearchFilters): Observable<SearchResult> {
@@ -28,7 +31,18 @@ export class GameSearchService {
 
     return this.httpClient
       .get<SearchResult>(`${environment.BASE_API_URL}games`, { params })
-      .pipe(finalize(() => this.$loading.set(false)));
+      .pipe(
+        tap((result) => (this.nextUrl = result.next)),
+        finalize(() => this.$loading.set(false))
+      );
+  }
+
+  nextPage(): Observable<SearchResult> {
+    this.$loading.set(true);
+    return this.httpClient.get<SearchResult>(this.nextUrl).pipe(
+      tap((result) => (this.nextUrl = result.next)),
+      finalize(() => this.$loading.set(false))
+    );
   }
 
   setGames(games: Game[]): void {

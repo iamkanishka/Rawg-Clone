@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { AbstractGamesPageParams } from 'src/core/models/abstract-games-page-params';
 import { SearchFilters } from 'src/core/models/search-filters';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
@@ -10,7 +11,7 @@ import { SpinnerComponent } from 'src/shared/spinner/spinner.component';
 @Component({
   selector: 'app-new-games',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule],
+  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule, InfiniteScrollModule],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl:
