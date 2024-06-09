@@ -1,5 +1,5 @@
 import { Component, Input, Signal, computed } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { Game } from 'src/core/models/Game';
 import { RouterLink } from '@angular/router';
 import { User } from 'src/core/models/user';
@@ -8,7 +8,7 @@ import { AuthService } from 'src/core/services/common/auth.service';
 @Component({
   selector: 'app-game-card',
   standalone: true,
-  imports: [DatePipe, RouterLink, NgClass],
+  imports: [DatePipe, RouterLink, NgClass, NgOptimizedImage],
   templateUrl: './game-card.component.html',
   styleUrl: './game-card.component.css',
 })

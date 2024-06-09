@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthInterceptor } from 'src/core/Interceptors/auth/auth.interceptor';
@@ -12,7 +12,7 @@ function init(genresService: GenreService) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(appRoutes, withViewTransitions()),
+    provideRouter(appRoutes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(withInterceptors([AuthInterceptor])),
 
     {

@@ -28,7 +28,12 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 @Component({
   selector: 'app-abstract-games-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule, InfiniteScrollModule],
+  imports: [
+    GameListComponent,
+    SpinnerComponent,
+    ReactiveFormsModule,
+    InfiniteScrollModule,
+  ],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './abstract-games-page.component.html',
@@ -63,7 +68,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
 
   componentParams: AbstractGamesPageParams = {
     title: 'Please provide a title',
-    showFilters: true,
+    showFilters: false,
   };
 
   form: FormGroup;
@@ -80,7 +85,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
     }
     this.subscribeToFiltersChange();
     this.subscribeToQueryChanges();
-    this.subscribetoInfiniteScroll()
+    this.subscribetoInfiniteScroll();
 
     this.initForm();
   }
@@ -114,7 +119,7 @@ export abstract class AbstractGamesPageComponent implements OnInit {
       )
       .subscribe((data: SearchResult) => {
         this.$games.update((values: Game[]) => {
-          return [ ...values, ...data.results ];
+          return [...values, ...data.results];
         });
       });
   }
