@@ -1,9 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AutoDestroyService } from 'src/core/services/Utils/auto-destroy.service';
- 
+
 import { GameListComponent } from 'src/shared/game-list/game-list.component';
 import { SpinnerComponent } from 'src/shared/spinner/spinner.component';
 import { AbstractGamesPageComponent } from 'src/shared/abstract-games-page/abstract-games-page.component';
@@ -15,14 +12,20 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [GameListComponent, SpinnerComponent, ReactiveFormsModule, InfiniteScrollModule],
+  imports: [
+    GameListComponent,
+    SpinnerComponent,
+    ReactiveFormsModule,
+    InfiniteScrollModule,
+  ],
   providers: [AutoDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.html',
-  styleUrl: '../../../../shared/abstract-games-page/abstract-games-page.component.css',
+  templateUrl:
+    '../../../../shared/abstract-games-page/abstract-games-page.component.html',
+  styleUrl:
+    '../../../../shared/abstract-games-page/abstract-games-page.component.css',
 })
-export class GamePageComponent extends  AbstractGamesPageComponent {
- 
+export class GamePageComponent extends AbstractGamesPageComponent {
   override defaultSearchFilters: SearchFilters = {
     ...this.defaultSearchFilters,
   };
@@ -30,10 +33,10 @@ export class GamePageComponent extends  AbstractGamesPageComponent {
   override componentParams: AbstractGamesPageParams = {
     ...this.componentParams,
     title: 'All Games',
+    showFilters: true,
   };
 
-
-  constructor(){
-    super()
+  constructor() {
+    super();
   }
 }

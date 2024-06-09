@@ -12,6 +12,7 @@
     <span class="text-md text-white">{{ componentParams.subtitle }}</span>
   </div>
 
+  @if(componentParams.showFilters){
   <form [formGroup]="form" class="flex gap-5">
     <div>
       <label for="small" class="block mb-2 text-sm font-medium text-white"
@@ -46,6 +47,8 @@
       </select>
     </div>
   </form>
+
+}
 
 
   <app-game-list [games]="$games()"></app-game-list>
